@@ -4,7 +4,7 @@ RIVOJLAN — Telegram Bot
 Token: 8812940526:AAFfS8PgwthWa10IhQv-HivXc_J9nxzITJo
 
 O'rnatish:
-  pip install python-telegram-bot==20.7 supabase python-dotenv schedule
+  pip install python-telegram-bot==20.7 supabase python-dotenv 
 
 Ishga tushirish:
   python bot.py
@@ -15,7 +15,6 @@ import json
 import random
 import asyncio
 import logging
-import schedule
 import time
 import threading
 from datetime import datetime
