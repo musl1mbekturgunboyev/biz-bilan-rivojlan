@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rivojlan — Ingliz tilini o'rganing</title>
+<meta name="description" content="4000 ta muhim ingliz so'zlarini o'rganing, reyting tizimi orqali o'z darajangizni kuzating">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#5B4FCF;--p2:#7B6FE8;--p3:#EEF0FF;
+  --g:#10B981;--g2:#E3F9F0;
+  --gold:#E8A020;--goldb:#FFF3D6;
+  --r:#E8453C;--rb:#FFEEED;
+  --bg:#F8F7FF;--card:#fff;
+  --text:#1a1a2e;--text2:#6B7280;--border:#E5E7EB;
+  --radius:12px;--shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+.hidden{display:none!important}
+a{color:var(--p);text-decoration:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:var(--p);height:54px;display:flex;align-items:center;padding:0 16px;gap:10px;box-shadow:0 2px 8px rgba(91,79,207,0.3)}
+.logo{display:flex;align-items:center;gap:8px;flex:1}
+.logo-ic{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-t{color:#fff;font-size:16px;font-weight:600}
+.logo-s{color:rgba(255,255,255,0.65);font-size:10px}
+.lang-g{display:flex;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.3)}
+.lb{padding:5px 9px;font-size:11px;font-weight:600;background:transparent;color:rgba(255,255,255,0.65);border:none;cursor:pointer;transition:all 0.15s}
+.lb.on{background:rgba(255,255,255,0.25);color:#fff}
+.nav-u{display:flex;align-items:center;gap:8px}
+.nav-av{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;cursor:pointer}
+.nav-nm{font-size:12px;color:rgba(255,255,255,0.9);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-out{padding:4px 10px;font-size:11px;background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:6px;cursor:pointer;transition:background 0.15s}
+.nav-out:hover{background:rgba(255,255,255,0.25)}
+
+/* AUTH */
+.auth-bg{min-height:calc(100vh - 54px);background:linear-gradient(135deg,var(--p) 0%,var(--p2) 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{background:#fff;border-radius:20px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.auth-logo{text-align:center;margin-bottom:24px}
+.auth-logo .ic{width:56px;height:56px;border-radius:16px;background:var(--p3);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px}
+.auth-logo h2{font-size:20px;font-weight:700;color:var(--text)}
+.auth-logo p{font-size:13px;color:var(--text2);margin-top:4px}
+.fld{margin-bottom:14px}
+.fld label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-weight:600}
+.fld input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s;background:#fff}
+.fld input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,79,207,0.1)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-f{width:100%;padding:12px;background:var(--p);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-top:4px}
+.btn-f:hover{background:var(--p2);transform:translateY(-1px)}
+.btn-f:active{transform:translateY(0)}
+.sw{text-align:center;margin-top:14px;font-size:13px;color:var(--text2)}
+.sw .lnk{color:var(--p);cursor:pointer;font-weight:600}
+.err-box{background:#FEE2E2;color:#991B1B;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:12px;display:none;border-left:3px solid #E8453C}
+
+/* HERO */
+.hero{background:var(--p);padding:24px 16px 32px;color:#fff;text-align:center}
+.hero h1{font-size:clamp(18px,4vw,24px);font-weight:700;margin-bottom:6px}
+.hero p{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:18px}
+.hcards{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hc{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:10px 16px;min-width:85px;text-align:center}
+.hc-n{font-size:22px;font-weight:700}
+.hc-l{font-size:10px;color:rgba(255,255,255,0.7);margin-top:2px}
+
+/* TABS */
+.tab-bar{background:#fff;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;min-width:70px;padding:12px 8px;font-size:12px;font-weight:500;color:var(--text2);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab-btn i{font-size:18px}
+.tab-btn.on{color:var(--p);border-bottom-color:var(--p);font-weight:600}
+
+.main{padding:16px;max-width:700px;margin:0 auto}
+
+/* BOLIMLAR */
+.bolim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+@media(max-width:400px){.bolim-grid{grid-template-columns:1fr 1fr}}
+.bk{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow)}
+.bk:hover:not(.locked){border-color:var(--p);transform:translateY(-2px);box-shadow:0 4px 12px rgba(91,79,207,0.15)}
+.bk:active:not(.locked){transform:translateY(0)}
+.bk.locked{opacity:0.6;cursor:not-allowed}
+.bk-h{padding:14px 12px;display:flex;align-items:center;gap:10px}
+.bk-ic{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0}
+.bk-nm{font-size:13px;font-weight:700;color:var(--text)}
+.bk-d{font-size:10px;color:var(--text2);margin-top:2px}
+.bk-pb{padding:10px 12px;border-top:1px solid var(--border);background:#FAFAFA}
+.pb-bar{height:5px;background:#E5E7EB;border-radius:3px;margin-bottom:6px;overflow:hidden}
+.pb-fill{height:100%;border-radius:3px;transition:width 0.4s}
+.bk-st{display:flex;justify-content:space-between;font-size:10px;color:var(--text2)}
+.bk-lk{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);padding:8px 12px;border-top:1px solid var(--border);background:#FAFAFA}
+
+/* DARS KARTOCHKALAR */
+.det-wrap{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.det-hd{background:var(--p);padding:14px 16px;color:#fff;display:flex;align-items:center;gap:10px}
+.btn-back{background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0;transition:background 0.15s}
+.btn-back:hover{background:rgba(255,255,255,0.3)}
+.det-ti{font-size:16px;font-weight:700}
+.det-su{font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px}
+
+.test-ban{margin:12px;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.test-ban.open{background:var(--p3);border:1.5px solid rgba(91,79,207,0.25)}
+.test-ban.locked{background:#F9FAFB;border:1.5px solid var(--border)}
+.test-ban.done{background:var(--g2);border:1.5px solid rgba(16,185,129,0.3)}
+.tb-inf h3{font-size:13px;font-weight:700;margin-bottom:3px}
+.tb-inf p{font-size:11px}
+.tb-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.tb-btn.p{background:var(--p);color:#fff}
+.tb-btn.p:hover{background:var(--p2)}
+.tb-btn.g{background:var(--g);color:#fff;cursor:default}
+.tb-btn.gr{background:#E5E7EB;color:var(--text2);cursor:not-allowed}
+
+.dars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:12px}
+@media(max-width:360px){.dars-grid{grid-template-columns:1fr 1fr}}
+.dc{background:#fff;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all 0.15s}
+.dc:hover:not(.dc-lk){border-color:var(--p);box-shadow:0 2px 8px rgba(91,79,207,0.12)}
+.dc.dc-lk{opacity:0.55;cursor:not-allowed}
+.dc.dc-done{border-color:var(--g)}
+.dc-top{padding:10px 11px}
+.dc-num{font-size:11px;font-weight:700;color:var(--p);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.dc-ck{color:var(--g);font-size:14px}
+.dc-ws{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px}
+.wp{padding:2px 6px;background:var(--p3);border-radius:100px;font-size:10px;color:#3C3489;font-weight:600}
+.dc-cnt{font-size:10px;color:var(--text2)}
+.dc-foot{padding:8px 11px;border-top:1px solid var(--border);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:4px;transition:background 0.15s}
+.dc-foot.blue{color:var(--p);background:var(--p3)}
+.dc-foot.green{background:var(--g2);color:#065F46}
+.dc-foot.gray{background:#F3F4F6;color:var(--text2)}
+
+/* SO'ZLAR SAHIFASI */
+.word-pg{padding:14px}
+.wg{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin-bottom:14px}
+.wc{background:#F8F7FF;border:1px solid var(--p3);border-radius:9px;padding:11px 12px;cursor:default;transition:transform 0.1s}
+.wc:active{transform:scale(0.98)}
+.wc-en{font-size:14px;font-weight:700;color:var(--text)}
+.wc-uz{font-size:13px;color:var(--p);margin-top:3px;font-weight:500}
+.wc-ex{font-size:11px;color:var(--text2);margin-top:3px;font-style:italic}
+.wp-foot{background:#fff;border-top:1px solid var(--border);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;bottom:0}
+.wp-info{font-size:12px;color:var(--text2)}
+.btn-quiz{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:var(--p);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.btn-quiz:hover{background:var(--p2)}
+
+/* QUIZ */
+.quiz-pg{padding:14px}
+.qz-prog-bar{height:5px;background:#E5E7EB;border-radius:3px;margin-bottom:16px;overflow:hidden}
+.qz-prog-fill{height:100%;background:var(--p);border-radius:3px;transition:width 0.3s}
+.qz-card{background:#F8F7FF;border:1.5px solid var(--p3);border-radius:12px;padding:16px;margin-bottom:14px}
+.qz-word{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.qz-sub{font-size:12px;color:var(--text2)}
+.qz-q{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+@media(max-width:340px){.opts{grid-template-columns:1fr}}
+.opt{padding:11px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;cursor:pointer;background:#fff;color:var(--text);text-align:left;transition:all 0.15s;font-weight:500}
+.opt:hover{border-color:var(--p);background:var(--p3)}
+.opt.correct{background:var(--g2);border-color:var(--g);color:#065F46}
+.opt.wrong{background:var(--rb);border-color:var(--r);color:#991B1B}
+.opt.show-c{background:var(--g2);border-color:var(--g);color:#065F46}
+.qz-nav{display:flex;justify-content:space-between;align-items:center}
+.qz-stat{font-size:12px;color:var(--text2)}
+.btn-nxt{padding:9px 18px;background:var(--p);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* NATIJA */
+.res-pg{padding:24px 16px;text-align:center}
+.res-emoji{font-size:56px;margin-bottom:12px}
+.res-pct{font-size:40px;font-weight:700;margin-bottom:4px}
+.res-lbl{font-size:14px;color:var(--text2);margin-bottom:16px}
+.res-bar-w{height:10px;background:#E5E7EB;border-radius:5px;max-width:260px;margin:0 auto 16px;overflow:hidden}
+.res-bar-f{height:100%;border-radius:5px;transition:width 0.6s}
+.res-msg{font-size:14px;padding:12px 16px;border-radius:10px;margin-bottom:18px;max-width:300px;margin-left:auto;margin-right:auto;font-weight:600}
+.res-msg.pass{background:var(--g2);color:#065F46}
+.res-msg.fail{background:var(--rb);color:#991B1B}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-r{padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text);transition:all 0.15s}
+.btn-r:hover{background:#F3F4F6}
+.btn-r.p{background:var(--p);color:#fff;border-color:var(--p)}
+.btn-r.p:hover{background:var(--p2)}
+
+/* REYTING */
+.lb-wrap{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.lb-hd{padding:10px 14px;background:#F9FAFB;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text2);display:grid;grid-template-columns:36px 1fr 60px 50px;gap:6px;text-transform:uppercase;letter-spacing:0.5px}
+.lb-row{padding:11px 14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:36px 1fr 60px 50px;gap:6px;align-items:center;transition:background 0.1s}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:#F9FAFB}
+.lb-row.mine{background:var(--p3)}
+.rnk{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.r1{background:var(--goldb);color:#92400E}
+.r2{background:#F3F4F6;color:#374151}
+.r3{background:var(--rb);color:#991B1B}
+.rn{background:#F3F4F6;color:var(--text2)}
+.lb-u{display:flex;align-items:center;gap:8px;overflow:hidden}
+.sm-av{width:28px;height:28px;border-radius:50%;background:var(--p3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--p);flex-shrink:0}
+.lb-nm{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-bar{height:3px;background:#E5E7EB;border-radius:2px;margin-top:3px}
+.lb-bf{height:100%;background:var(--p);border-radius:2px}
+.lb-pt{font-size:13px;font-weight:700;color:var(--p);text-align:right}
+.lb-str{font-size:12px;text-align:center}
+
+/* PROFIL */
+.prof-h{background:var(--p);border-radius:var(--radius);padding:18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;color:#fff}
+.big-av{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
+.pi-nm{font-size:18px;font-weight:700}
+.pi-em{font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px}
+.pi-bs{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.pbg{padding:3px 10px;border-radius:100px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.2);color:#fff}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:360px){.sg{grid-template-columns:1fr 1fr}}
+.sc{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;text-align:center;box-shadow:var(--shadow)}
+.sc-n{font-size:20px;font-weight:700;color:var(--p)}
+.sc-l{font-size:10px;color:var(--text2);margin-top:2px}
+.tg-card{background:var(--p3);border:1.5px solid rgba(91,79,207,0.2);border-radius:var(--radius);padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tg-card h3{font-size:13px;font-weight:700;color:#3C3489;margin-bottom:4px}
+.tg-card p{font-size:12px;color:#534AB7}
+.tg-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:var(--p);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.tg-btn:hover{background:var(--p2)}
+
+/* TAHLIL */
+.an-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:360px){.an-g{grid-template-columns:1fr 1fr}}
+.an-c{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;box-shadow:var(--shadow)}
+.an-l{font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:600}
+.an-v{font-size:22px;font-weight:700;color:var(--p)}
+.ch-w{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.ch-bs{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:14px}
+.ch-it{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.ch-b{width:100%;background:var(--p);border-radius:4px 4px 0 0;min-height:4px}
+.ch-b.dm{background:var(--p3)}
+.ch-lb{font-size:9px;color:var(--text2)}
+.ch-vl{font-size:9px;font-weight:700}
+
+/* FOOTER */
+footer{background:#fff;border-top:1px solid var(--border);text-align:center;padding:14px;font-size:12px;color:var(--text2);margin-top:20px}
+footer strong{color:var(--p)}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text2);font-size:14px;gap:10px}
+.spin{width:20px;height:20px;border:2px solid var(--p3);border-top-color:var(--p);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<nav>
+  <div class="logo">
+    <div class="logo-ic">📚</div>
+    <div>
+      <div class="logo-t">Rivojlan</div>
+      <div class="logo-s" id="ls">Biz bilan rivojlan</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="lang-g">
+      <button class="lb on" onclick="setLang(0)">UZ</button>
+      <button class="lb" onclick="setLang(1)">RU</button>
+      <button class="lb" onclick="setLang(2)">EN</button>
+    </div>
+    <div class="nav-u hidden" id="nav-u">
+      <div class="nav-av" id="nav-av">?</div>
+      <span class="nav-nm" id="nav-nm"></span>
+      <button class="nav-out" id="btn-out" onclick="logout()">Chiqish</button>
+    </div>
+  </div>
+</nav>
+
+<!-- AUTH -->
+<div id="view-auth">
+  <div class="auth-bg">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="ic">📚</div>
+        <h2 id="ah2">Xush kelibsiz!</h2>
+        <p id="ap">Ingliz tilini o'rganishni boshlang</p>
+      </div>
+      <div id="err-b" class="err-box"></div>
+      <div id="f-in">
+        <div class="fld"><label id="ll-e">Email</label><input type="email" id="l-e" placeholder="email@mail.com" autocomplete="email"></div>
+        <div class="fld"><label id="ll-p">Parol</label><input type="password" id="l-p" placeholder="••••••" autocomplete="current-password"></div>
+        <button class="btn-f" id="b-in" onclick="doLogin()">Kirish</button>
+        <div class="sw"><span id="sw1">Hali ro'yxatdan o'tmaganmisiz?</span> <span class="lnk" id="sw1l" onclick="showReg()">Ro'yxatdan o'tish</span></div>
+      </div>
+      <div id="f-reg" class="hidden">
+        <div class="fr2">
+          <div class="fld"><label id="ll-fn">Ism</label><input type="text" id="r-fn" placeholder="Jasur" autocomplete="given-name"></div>
+          <div class="fld"><label id="ll-ln">Familya</label><input type="text" id="r-ln" placeholder="Toshmatov" autocomplete="family-name"></div>
+        </div>
+        <div class="fld"><label id="ll-re">Email</label><input type="email" id="r-e" placeholder="email@mail.com" autocomplete="email"></div>
+        <div class="fld"><label id="ll-rp">Parol</label><input type="password" id="r-p" placeholder="••••••" autocomplete="new-password"></div>
+        <button class="btn-f" id="b-reg" onclick="doReg()">Ro'yxatdan o'tish</button>
+        <div class="sw"><span id="sw2">Akkauntingiz bormi?</span> <span class="lnk" id="sw2l" onclick="showLogin()">Kirish</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="view-main" class="hidden">
+  <div class="hero">
+    <h1 id="hero-h">Salom!</h1>
+    <p id="hero-p">Bugungi darsni boshlang!</p>
+    <div class="hcards">
+      <div class="hc"><div class="hc-n" id="h-pts">0</div><div class="hc-l" id="hl-pts">Ball</div></div>
+      <div class="hc"><div class="hc-n" id="h-rank">#1</div><div class="hc-l" id="hl-rk">Reyting</div></div>
+      <div class="hc"><div class="hc-n" id="h-words">0</div><div class="hc-l" id="hl-w">So'z</div></div>
+      <div class="hc"><div class="hc-n" id="h-str">0</div><div class="hc-l" id="hl-s">Kun</div></div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn on" id="tab-b" onclick="goTab('b')"><i class="ti ti-books"></i><span id="tl-b">Bo'limlar</span></button>
+    <button class="tab-btn" id="tab-r" onclick="goTab('r')"><i class="ti ti-trophy"></i><span id="tl-r">Reyting</span></button>
+    <button class="tab-btn" id="tab-p" onclick="goTab('p')"><i class="ti ti-user"></i><span id="tl-p">Profil</span></button>
+    <button class="tab-btn" id="tab-a" onclick="goTab('a')"><i class="ti ti-chart-bar"></i><span id="tl-a">Tahlil</span></button>
+  </div>
+
+  <div class="main">
+    <!-- BOLIMLAR -->
+    <div id="pg-b">
+      <div id="pg-home">
+        <p style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px" id="st-b">5 ta o'quv bo'limi</p>
+        <div class="bolim-grid" id="bolim-list"></div>
+      </div>
+      <div id="pg-darslar" class="hidden">
+        <div class="det-wrap">
+          <div class="det-hd">
+            <button class="btn-back" onclick="backHome()"><i class="ti ti-arrow-left"></i> <span id="bk-back">Orqaga</span></button>
+            <div style="flex:1"><div class="det-ti" id="bk-ti"></div><div class="det-su" id="bk-su"></div></div>
+          </div>
+          <div id="test-ban-area"></div>
+          <div class="dars-grid" id="dars-grid"></div>
+        </div>
+      </div>
+      <div id="pg-word" class="hidden">
+        <div class="det-wrap">
+          <div class="det-hd">
+            <button class="btn-back" onclick="backDarslar()"><i class="ti ti-arrow-left"></i> <span id="wd-back">Orqaga</span></button>
+            <div style="flex:1"><div class="det-ti" id="wd-ti"></div><div class="det-su" id="wd-su"></div></div>
+          </div>
+          <div class="word-pg">
+            <div class="wg" id="wd-grid"></div>
+          </div>
+          <div class="wp-foot">
+            <span class="wp-info" id="wd-info"></span>
+            <button class="btn-quiz" id="wd-qbtn" onclick="startUnitQuiz()">
+              <i class="ti ti-pencil"></i> <span id="wd-ql">Testni boshlash</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="pg-quiz" class="hidden">
+        <div class="det-wrap">
+          <div class="det-hd">
+            <button class="btn-back" onclick="backFromQuiz()"><i class="ti ti-arrow-left"></i> <span id="qz-bk">Orqaga</span></button>
+            <div style="flex:1"><div class="det-ti" id="qz-ti"></div><div class="det-su" id="qz-su"></div></div>
+          </div>
+          <div id="quiz-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REYTING -->
+    <div id="pg-r" class="hidden">
+      <div class="lb-wrap">
+        <div class="lb-hd">
+          <span>#</span><span id="rh-u">Foydalanuvchi</span>
+          <span id="rh-p" style="text-align:right">Ball</span>
+          <span style="text-align:center">🔥</span>
+        </div>
+        <div id="lb-body"><div class="loading"><div class="spin"></div> Yuklanmoqda...</div></div>
+      </div>
+    </div>
+
+    <!-- PROFIL -->
+    <div id="pg-p" class="hidden">
+      <div class="prof-h">
+        <div class="big-av" id="p-av">J</div>
+        <div>
+          <div class="pi-nm" id="p-nm">—</div>
+          <div class="pi-em" id="p-em">—</div>
+          <div class="pi-bs">
+            <span class="pbg" id="p-lv">⭐ Beginner</span>
+            <span class="pbg" id="p-jn">📅 2024</span>
+            <span class="pbg" id="p-st">🔥 1 kun</span>
+          </div>
+        </div>
+      </div>
+      <div class="sg">
+        <div class="sc"><div class="sc-n" id="sp-pts">0</div><div class="sc-l" id="sl-pts">Ball</div></div>
+        <div class="sc"><div class="sc-n" id="sp-w">0</div><div class="sc-l" id="sl-w">So'z</div></div>
+        <div class="sc"><div class="sc-n" id="sp-r">#1</div><div class="sc-l" id="sl-r">Reyting</div></div>
+        <div class="sc"><div class="sc-n" id="sp-s">0</div><div class="sc-l" id="sl-s">Streak</div></div>
+      </div>
+      <div class="tg-card">
+        <div>
+          <h3 id="tg-h">Telegram botga ulash</h3>
+          <p id="tg-p">Testlarni bot orqali topshiring</p>
+        </div>
+        <button class="tg-btn" onclick="openTg()"><i class="ti ti-brand-telegram"></i> <span id="tg-bt">Botga o'tish</span></button>
+      </div>
+    </div>
+
+    <!-- TAHLIL -->
+    <div id="pg-a" class="hidden">
+      <div class="an-g">
+        <div class="an-c"><div class="an-l" id="al1">Bu oy ball</div><div class="an-v" id="av1">0</div></div>
+        <div class="an-c"><div class="an-l" id="al2">So'zlar</div><div class="an-v" id="av2">0</div></div>
+        <div class="an-c"><div class="an-l" id="al3">Testlar</div><div class="an-v" id="av3">0</div></div>
+      </div>
+      <div class="ch-w">
+        <p style="font-size:13px;font-weight:700" id="ch-t">Oylik progress</p>
+        <div class="ch-bs" id="ch-bs"></div>
+      </div>
+      <div class="tg-card">
+        <div><h3 id="rp-h">Oylik hisobot</h3><p id="rp-p">Har oy Telegramga avtomatik yuboriladi</p></div>
+        <button class="tg-btn" onclick="openTg()"><i class="ti ti-send"></i> <span id="rp-bt">Yuborish</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong id="ft-s">Rivojlan</strong> — <span id="ft-c">Ushbu sayt Muslimbek Turg'unboyev tomonidan tayyorlandi</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
