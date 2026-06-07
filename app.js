@@ -235,60 +235,57 @@ async function doLogin() {
   const ps = document.getElementById('l-p').value;
   if(!em || !ps) { showErr(t().e1); return; }
 
-  document.getElementById('b-in').textContent = '...';
-  document.getElementById('b-in').disabled = true;
+  const btn = document.getElementById('b-in');
+  btn.textContent = '...'; btn.disabled = true;
 
   try {
-    const { data, error } = await db.auth.signInWithPassword({ email: em, password: ps });
-    if(error) { showErr(t().e3); return; }
+    // Email bo'yicha topish
+    const { data: userData, error } = await db.from('users')
+      .select('*').eq('email', em).maybeSingle();
+    if(error || !userData) { showErr(t().e3); return; }
 
-    // Foydalanuvchi ma'lumotlarini olish
-    const { data: userData } = await db.from('users').select('*').eq('id', data.user.id).single();
-    if(userData) {
-      me = {
-        id: userData.id, fn: userData.first_name, ln: userData.last_name,
-        em: userData.email, pts: userData.pts || 0, streak: userData.streak || 1,
-        year: userData.year || new Date().getFullYear(),
-        monthly: userData.monthly || [0,0,0,0,0,0],
-        prog: userData.prog || {}
-      };
-    }
-    // Sessiyani saqlash — qayta kirmaganda eslab qolsin
+    // Parolni tekshirish
+    const encodedPs = btoa(unescape(encodeURIComponent(ps)));
+    if(userData.password !== encodedPs) { showErr(t().e3); return; }
+
+    me = {
+      id: userData.id, fn: userData.first_name, ln: userData.last_name,
+      em: userData.email, pts: userData.pts || 0, streak: userData.streak || 1,
+      year: userData.year || new Date().getFullYear(),
+      monthly: userData.monthly || [0,0,0,0,0,0],
+      prog: userData.prog || {}
+    };
     localStorage.setItem('rv_session', JSON.stringify({ em, ps }));
     startMain();
   } catch(e) {
     showErr(t().e3);
   } finally {
-    document.getElementById('b-in').textContent = t().bi;
-    document.getElementById('b-in').disabled = false;
+    btn.textContent = t().bi; btn.disabled = false;
   }
 }
 
 async function autoLogin() {
-  // Sahifa ochilganda avtomatik login
   const saved = localStorage.getItem('rv_session');
   if(!saved) return false;
   try {
     const { em, ps } = JSON.parse(saved);
-    const { data, error } = await db.auth.signInWithPassword({ email: em, password: ps });
-    if(error || !data.user) return false;
-    const { data: userData } = await db.from('users').select('*').eq('id', data.user.id).single();
-    if(userData) {
-      me = {
-        id: userData.id, fn: userData.first_name, ln: userData.last_name,
-        em: userData.email, pts: userData.pts || 0, streak: userData.streak || 1,
-        year: userData.year || new Date().getFullYear(),
-        monthly: userData.monthly || [0,0,0,0,0,0],
-        prog: userData.prog || {}
-      };
-      return true;
-    }
-  } catch(e) {}
-  return false;
+    const { data: userData } = await db.from('users')
+      .select('*').eq('email', em).maybeSingle();
+    if(!userData) return false;
+    const encodedPs = btoa(unescape(encodeURIComponent(ps)));
+    if(userData.password !== encodedPs) return false;
+    me = {
+      id: userData.id, fn: userData.first_name, ln: userData.last_name,
+      em: userData.email, pts: userData.pts || 0, streak: userData.streak || 1,
+      year: userData.year || new Date().getFullYear(),
+      monthly: userData.monthly || [0,0,0,0,0,0],
+      prog: userData.prog || {}
+    };
+    return true;
+  } catch(e) { return false; }
 }
 
 async function logout() {
-  await db.auth.signOut();
   localStorage.removeItem('rv_session');
   me = null; curBk = -1; curUnit = -1;
   document.getElementById('view-main').classList.add('hidden');
@@ -318,8 +315,13 @@ function startMain() {
 
 // ---- HELPERS ----
 async function getAllUsers() {
-  const { data } = await db.from('users').select('first_name,last_name,pts,streak').order('pts', { ascending: false });
-  return data || [];
+  try {
+    const { data, error } = await db.from('users')
+      .select('id, first_name, last_name, email, pts, streak')
+      .order('pts', { ascending: false });
+    if(error) { console.error('getAllUsers error:', error); return []; }
+    return data || [];
+  } catch(e) { console.error(e); return []; }
 }
 
 function getWords() {
@@ -568,7 +570,7 @@ async function renderLB() {
   const max = users[0]?.pts || 1;
   let html = '';
   users.slice(0,20).forEach((u,i) => {
-    const isMe = u.email === me.em;
+    const isMe = u.email === me.em || u.id === me.id;
     const ini = ((u.first_name||'?')[0] + (u.last_name||'')[0]).toUpperCase();
     const pct = Math.round((u.pts/max)*100);
     const rc = ['','r1','r2','r3'][i+1]||'rn';
@@ -587,7 +589,7 @@ async function renderLB() {
 // ---- PROFIL ----
 async function renderProf() {
   const users = await getAllUsers();
-  const rank = users.findIndex(u => u.email === me.em) + 1 || 1;
+  const rank = users.findIndex(u => u.email === me.em || u.id === me.id) + 1 || 1;
   const ini = (me.fn[0]+(me.ln[0]||'')).toUpperCase();
   document.getElementById('p-av').textContent = ini;
   document.getElementById('p-nm').textContent = me.fn+' '+me.ln;
