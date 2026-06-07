@@ -296,21 +296,47 @@ async function logout() {
 
 async function saveProgress() {
   if(!me) return;
-  await db.from('users').update({
-    pts: me.pts, streak: me.streak,
-    monthly: me.monthly, prog: me.prog
-  }).eq('id', me.id);
+  try {
+    const { error } = await db.from('users').update({
+      pts: me.pts || 0,
+      streak: me.streak || 1,
+      monthly: me.monthly || [0,0,0,0,0,0],
+      prog: me.prog || {}
+    }).eq('id', me.id);
+    if(error) console.error('saveProgress error:', error);
+  } catch(e) { console.error('saveProgress:', e); }
 }
 
 function startMain() {
-  document.getElementById('view-auth').classList.add('hidden');
-  document.getElementById('view-main').classList.remove('hidden');
-  document.getElementById('nav-u').classList.remove('hidden');
-  if(!me.prog) me.prog = {};
-  const ini = (me.fn[0] + (me.ln[0] || '')).toUpperCase();
-  document.getElementById('nav-av').textContent = ini;
-  document.getElementById('nav-nm').textContent = me.fn;
-  renderMain();
+  try {
+    document.getElementById('view-auth').classList.add('hidden');
+    document.getElementById('view-main').classList.remove('hidden');
+    document.getElementById('nav-u').classList.remove('hidden');
+    if(!me.prog) me.prog = {};
+    if(typeof me.prog === 'string') { try { me.prog = JSON.parse(me.prog); } catch(e){ me.prog={}; } }
+    if(!me.monthly) me.monthly = [0,0,0,0,0,0];
+    if(typeof me.monthly === 'string') { try { me.monthly = JSON.parse(me.monthly); } catch(e){ me.monthly=[0,0,0,0,0,0]; } }
+    const ini = ((me.fn||'?')[0] + ((me.ln||'')[0]||'')).toUpperCase();
+    document.getElementById('nav-av').textContent = ini;
+    document.getElementById('nav-nm').textContent = me.fn || 'Foydalanuvchi';
+    // Hero ni darhol ko'rsatish
+    document.getElementById('hero-h').textContent = (t().hh||'Salom') + ', ' + me.fn + '!';
+    document.getElementById('hero-p').textContent = t().hp || 'Bugungi darsni boshlang!';
+    document.getElementById('h-pts').textContent = me.pts || 0;
+    document.getElementById('h-rank').textContent = '#1';
+    document.getElementById('h-words').textContent = getWords();
+    document.getElementById('h-str').textContent = me.streak || 1;
+    // Bo'limlarni ko'rsatish
+    renderBolimlar();
+    // Reytingni background da yuklash
+    getAllUsers().then(users => {
+      const rank = users.findIndex(u => u.email === me.em || u.id === me.id) + 1;
+      if(rank > 0) document.getElementById('h-rank').textContent = '#' + rank;
+    }).catch(()=>{});
+  } catch(e) {
+    console.error('startMain error:', e);
+    alert('Xatolik: ' + e.message);
+  }
 }
 
 // ---- HELPERS ----
@@ -335,43 +361,53 @@ function prevUnitOk(bi, ui) { return ui === 0 || (me.prog && me.prog[`b${bi}u${u
 
 // ---- RENDER ----
 async function renderMain() {
-  // Reyting uchun barcha foydalanuvchilarni olish
-  const allUsers = await getAllUsers();
-  const rank = allUsers.findIndex(u => u.email === me.em) + 1 || allUsers.length + 1;
-
-  document.getElementById('hero-h').textContent = t().hh + ', ' + me.fn + '!';
-  document.getElementById('hero-p').textContent = t().hp;
-  document.getElementById('h-pts').textContent = me.pts;
-  document.getElementById('h-rank').textContent = '#' + (rank || 1);
-  document.getElementById('h-words').textContent = getWords();
-  document.getElementById('h-str').textContent = me.streak;
-  renderBolimlar();
+  try {
+    document.getElementById('hero-h').textContent = (t().hh||'Salom') + ', ' + me.fn + '!';
+    document.getElementById('hero-p').textContent = t().hp || '';
+    document.getElementById('h-pts').textContent = me.pts || 0;
+    document.getElementById('h-words').textContent = getWords();
+    document.getElementById('h-str').textContent = me.streak || 1;
+    renderBolimlar();
+    const allUsers = await getAllUsers();
+    const rank = allUsers.findIndex(u => u.email === me.em || u.id === me.id) + 1 || 1;
+    document.getElementById('h-rank').textContent = '#' + rank;
+  } catch(e) { console.error('renderMain:', e); }
 }
 
 function renderBolimlar() {
-  const el = document.getElementById('bolim-list');
-  el.innerHTML = '';
-  BOOKS.forEach((b, bi) => {
-    const ul = isBookUnlocked(bi);
-    const done = b.units.filter((_, ui) => me.prog && me.prog[`b${bi}u${ui}t`] === 'done').length;
-    const pct = Math.round((done / b.units.length) * 100);
-    const exam = me.prog && me.prog[`b${bi}exam`] === 'done';
-    el.innerHTML += `
-    <div class="bk${ul ? '' : ' locked'}" onclick="${ul ? `openBolim(${bi})` : ''}">
-      <div class="bk-h">
-        <div class="bk-ic" style="background:${b.bg};color:${b.color}">${bi+1}</div>
-        <div>
-          <div class="bk-nm">${b.nameUz} ${exam ? '✓' : ''}</div>
-          <div class="bk-d">4000 Essential Words</div>
+  try {
+    const el = document.getElementById('bolim-list');
+    if(!el) { console.error('bolim-list topilmadi'); return; }
+    if(!me || !me.prog) { console.error('me yoki me.prog yoq'); return; }
+    el.innerHTML = '';
+    BOOKS.forEach((b, bi) => {
+      const ul = isBookUnlocked(bi);
+      const prog = me.prog || {};
+      const done = b.units.filter((_, ui) => prog[`b${bi}u${ui}t`] === 'done').length;
+      const pct = Math.round((done / b.units.length) * 100);
+      const exam = prog[`b${bi}exam`] === 'done';
+      const card = document.createElement('div');
+      card.className = 'bk' + (ul ? '' : ' locked');
+      if(ul) card.onclick = () => openBolim(bi);
+      card.innerHTML = `
+        <div class="bk-h">
+          <div class="bk-ic" style="background:${b.bg};color:${b.color}">${bi+1}</div>
+          <div>
+            <div class="bk-nm">${b.nameUz} ${exam ? '✓' : ''}</div>
+            <div class="bk-d">4000 Essential Words</div>
+          </div>
         </div>
-      </div>
-      <div class="bk-pb">
-        <div class="pb-bar"><div class="pb-fill" style="width:${pct}%;background:${b.color}"></div></div>
-        <div class="bk-st"><span>${done}/${b.units.length} dars</span><span>${pct}%</span></div>
-      </div>
-      ${!ul ? `<div class="bk-lk">🔒 ${t().unitLocked}</div>` : ''}
-    </div>`;
-  });
+        <div class="bk-pb">
+          <div class="pb-bar"><div class="pb-fill" style="width:${pct}%;background:${b.color}"></div></div>
+          <div class="bk-st"><span>${done}/${b.units.length} dars</span><span>${pct}%</span></div>
+        </div>
+        ${!ul ? `<div class="bk-lk">🔒 ${t().unitLocked}</div>` : ''}`;
+      el.appendChild(card);
+    });
+    console.log('Bolimlar render qilindi:', BOOKS.length);
+  } catch(e) {
+    console.error('renderBolimlar xato:', e);
+  }
 }
 
 function openBolim(bi) {
@@ -400,24 +436,30 @@ function renderTestBanner(bi) {
 }
 
 function renderDarslar(bi) {
-  const el = document.getElementById('dars-grid');
-  el.innerHTML = '';
-  BOOKS[bi].units.forEach((u, ui) => {
-    const done = me.prog && me.prog[`b${bi}u${ui}t`] === 'done';
-    const prev = prevUnitOk(bi, ui);
-    const lk = !prev;
-    el.innerHTML += `
-    <div class="dc${lk ? ' dc-lk' : done ? ' dc-done' : ''}" onclick="${!lk ? `openDars(${bi},${ui})` : ''}">
-      <div class="dc-top">
-        <div class="dc-num">Dars ${u.n} ${done ? '<span class="dc-ck">✓</span>' : ''}</div>
-        <div class="dc-ws">${u.words.slice(0,5).map(w => `<span class="wp">${w}</span>`).join('')}<span class="wp">+${u.words.length-5}</span></div>
-        <div class="dc-cnt">${u.words.length} so'z</div>
-      </div>
-      <div class="dc-foot ${done ? 'green' : lk ? 'gray' : 'blue'}">
-        ${done ? '✓ ' + t().unitDone : lk ? '🔒 ' + t().unitLocked : '→ ' + t().unitOpen}
-      </div>
-    </div>`;
-  });
+  try {
+    const el = document.getElementById('dars-grid');
+    if(!el) return;
+    el.innerHTML = '';
+    const prog = me.prog || {};
+    BOOKS[bi].units.forEach((u, ui) => {
+      const done = prog[`b${bi}u${ui}t`] === 'done';
+      const prev = prevUnitOk(bi, ui);
+      const lk = !prev;
+      const card = document.createElement('div');
+      card.className = 'dc' + (lk ? ' dc-lk' : done ? ' dc-done' : '');
+      if(!lk) card.onclick = () => openDars(bi, ui);
+      card.innerHTML = `
+        <div class="dc-top">
+          <div class="dc-num">Dars ${u.n} ${done ? '<span class="dc-ck">✓</span>' : ''}</div>
+          <div class="dc-ws">${u.words.slice(0,5).map(w => '<span class="wp">'+w+'</span>').join('')}<span class="wp">+${u.words.length-5}</span></div>
+          <div class="dc-cnt">${u.words.length} so'z</div>
+        </div>
+        <div class="dc-foot ${done ? 'green' : lk ? 'gray' : 'blue'}">
+          ${done ? '✓ ' + t().unitDone : lk ? '🔒 ' + t().unitLocked : '→ ' + t().unitOpen}
+        </div>`;
+      el.appendChild(card);
+    });
+  } catch(e) { console.error('renderDarslar:', e); }
 }
 
 function openDars(bi, ui) {
@@ -698,10 +740,16 @@ function openTg() { window.open('https://t.me/BizBilan_Rivojlan_bot', '_blank');
 // ---- INIT ----
 async function init() {
   applyLang();
-  // Avtomatik login tekshirish
-  const ok = await autoLogin();
-  if(ok) {
-    startMain();
+  try {
+    // Loading ko'rsatish
+    document.getElementById('b-in').textContent = '...';
+    const ok = await autoLogin();
+    document.getElementById('b-in').textContent = t().bi || 'Kirish';
+    if(ok) { startMain(); }
+  } catch(e) {
+    console.error('init error:', e);
+    const btn = document.getElementById('b-in');
+    if(btn) btn.textContent = t().bi || 'Kirish';
   }
 }
 
