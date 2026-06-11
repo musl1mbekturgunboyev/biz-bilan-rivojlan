@@ -1,0 +1,19 @@
+{
+  "name": "biz-bilan-rivojlan",
+  "version": "1.0.0",
+  "description": "English learning platform - Rivojlan",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "english",
+    "learning",
+    "education"
+  ],
+  "author": "Muslimbek Turgunboyev",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
